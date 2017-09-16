@@ -1,0 +1,12 @@
+{
+  "name": "Go Starter",
+  "description": "Project starter for golang",
+  "keywords": [
+    "go-starter",
+    "go"
+  ],
+  "image": "heroku/go:1.8",
+  "mount_dir": "src/github.com/faisalraja/go-starter",
+  "website": "http://github.com/faisalraja/go-starter",
+  "repository": "http://github.com/faisalraja/go-starter"
+}
