@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"os"
@@ -19,7 +20,10 @@ type Config struct {
 
 // InitTemplates initialize config templates
 func (config *Config) InitTemplates(path string) {
-	templateBox := rice.MustFindBox(path)
+	if path != "templates" {
+		panic(fmt.Sprintf("Change rice.MustFindBox(`%s`) below.", path))
+	}
+	templateBox := rice.MustFindBox(`templates`)
 	templates := template.New("Server Templates")
 	templateBox.Walk("", func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() {
@@ -40,6 +44,9 @@ func (config *Config) InitTemplates(path string) {
 
 // InitStatic initialize config static files
 func (config *Config) InitStatic(urlPrefix string, folderPath string) {
-	staticBox := rice.MustFindBox(folderPath)
+	if folderPath != "static" {
+		panic(fmt.Sprintf("Change rice.MustFindBox(`%s`) below.", folderPath))
+	}
+	staticBox := rice.MustFindBox(`static`)
 	config.Engine.StaticFS(urlPrefix, staticBox.HTTPBox())
 }

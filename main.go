@@ -19,7 +19,7 @@ func main() {
 	config.Engine = gin.Default()
 	config.DB, _ = sqlx.Open("sqlite3", ":memory:")
 
-	config.InitTemplates("templates")
+	config.InitTemplates(`templates`)
 	config.InitStatic("/static", "static")
 
 	InitHandlers(config)
