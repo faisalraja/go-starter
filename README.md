@@ -9,6 +9,8 @@ Install dev dependencies && run locally:
     
     go get github.com/codegangsta/gin
     go get github.com/GeertJohan/go.rice/rice
+    # driver for your database
+    go get github.com/mattn/go-sqlite3
     go get
 
     gin

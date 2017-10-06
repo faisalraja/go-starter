@@ -1,51 +1,28 @@
 package main
 
 import (
-	"html/template"
-	"log"
-	"net/http"
 	"os"
 
-	rice "github.com/GeertJohan/go.rice"
 	"github.com/gin-gonic/gin"
+	"github.com/jmoiron/sqlx"
 )
 
 func main() {
-	port := os.Getenv("PORT")
+	config := new(Config)
 
-	if port == "" {
-		port = "8080"
+	config.Port = os.Getenv("PORT")
+
+	if config.Port == "" {
+		config.Port = "8080"
 	}
 
-	templateBox := rice.MustFindBox("templates")
-	staticBox := rice.MustFindBox("static")
+	config.Engine = gin.Default()
+	config.DB, _ = sqlx.Open("sqlite3", ":memory:")
 
-	router := gin.New()
-	router.Use(gin.Logger())
+	config.InitTemplates("templates")
+	config.InitStatic("/static", "static")
 
-	// Load all templates
-	templates := template.New("Server Templates")
-	templateBox.Walk("", func(path string, info os.FileInfo, err error) error {
-		if info.IsDir() {
-			return nil
-		}
-		log.Print("Loading template: " + path)
-		content, err := templateBox.String(path)
-		if err != nil {
-			return err
-		}
-		if _, err = templates.New(path).Parse(content); err != nil {
-			return err
-		}
-		return nil
-	})
-	router.SetHTMLTemplate(templates)
-	router.StaticFS("/static", staticBox.HTTPBox())
-	
+	InitHandlers(config)
 
-	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl.html", nil)
-	})
-
-	router.Run(":" + port)
+	config.Engine.Run(":" + config.Port)
 }
